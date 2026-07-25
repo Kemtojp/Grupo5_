@@ -1,0 +1,12 @@
+# Entorno virtual
+.venv/
+venv/
+env/
+
+# Archivos temporales de Python y Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Configuración de entorno y claves (si llegas a usar en el futuro)
+.env
