@@ -7,8 +7,7 @@ imaginaria con un modelo de Machine Learning.
 **Samsung Innovation Campus Chile 2026 — Cohort 2 · Código y Programación**
 
 🔗 **App publicada:** _(pendiente: pegar aquí la URL de Streamlit Cloud)_
-🔗 **Repositorio:** [[https://github.com/Kemtojp/hit-predictor-spotify))(https://github.com/Kemtojp/hit-predictor-spotify)]
-
+🔗 **Repositorio:** [hit-predictor-spotify](https://github.com/Kemtojp/hit-predictor-spotify)
 ---
 
 ## ❓ Pregunta de análisis
