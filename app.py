@@ -23,7 +23,7 @@ import charts
 RAIZ = Path(__file__).resolve().parent
 
 # TODO equipo: reemplazar por la URL real del repositorio del Grupo 5.
-REPO_URL = "https://github.com/Kemtojp/Grupo5_"
+REPO_URL = "https://github.com/Kemtojp/hit-predictor-spotify"
 
 # TODO equipo: abrir la página del dataset en Kaggle y copiar aquí la licencia
 # exacta que aparece en el recuadro "License". La rúbrica del curso exige
