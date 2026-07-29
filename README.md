@@ -7,7 +7,7 @@ imaginaria con un modelo de Machine Learning.
 **Samsung Innovation Campus Chile 2026 — Cohort 2 · Código y Programación**
 
 🔗 **App publicada:** _(pendiente: pegar aquí la URL de Streamlit Cloud)_
-🔗 **Repositorio:** https://github.com/JeanCuesta/Grupo5_
+🔗 **Repositorio:** [https://github.com/JeanCuesta/Grupo5_](https://github.com/Kemtojp/Grupo5_)
 
 ---
 
@@ -100,7 +100,7 @@ un promedio calculado sobre 3 canciones no es una tendencia, es ruido.
 ## 🚀 Cómo ejecutar la app
 
 ```bash
-git clone https://github.com/JeanCuesta/Grupo5_.git
+git clone https://github.com/Kemtojp/Grupo5_.git
 cd Grupo5_
 python -m venv .venv
 source .venv/bin/activate        # en Windows: .venv\Scripts\activate
