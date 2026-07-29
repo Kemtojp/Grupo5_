@@ -1,0 +1,49 @@
+{
+  "modelo": "RandomForest",
+  "n_total": 4494,
+  "n_train": 3595,
+  "n_test": 899,
+  "tasa_hits": 0.27303070761014686,
+  "umbral": 0.38000000000000017,
+  "baseline_accuracy": 0.7274749721913237,
+  "accuracy": 0.6084538375973304,
+  "balanced_accuracy": 0.6721774948511514,
+  "precision": 0.3940594059405941,
+  "recall": 0.8122448979591836,
+  "f1": 0.5306666666666666,
+  "roc_auc": 0.7424077888035947,
+  "matriz_confusion": [
+    [
+      348,
+      306
+    ],
+    [
+      46,
+      199
+    ]
+  ],
+  "features": [
+    "danceability",
+    "energy",
+    "valence",
+    "tempo",
+    "loudness",
+    "speechiness",
+    "acousticness",
+    "duration_min",
+    "instrumentalness",
+    "liveness"
+  ],
+  "importancias": {
+    "instrumentalness": 0.19512059338333704,
+    "loudness": 0.14258205419828995,
+    "duration_min": 0.10682588771926832,
+    "acousticness": 0.09978909268955863,
+    "energy": 0.09822223065603787,
+    "speechiness": 0.07965441417960914,
+    "tempo": 0.07308489891755537,
+    "danceability": 0.07209153590594702,
+    "valence": 0.07078575295659817,
+    "liveness": 0.06184353939379863
+  }
+}

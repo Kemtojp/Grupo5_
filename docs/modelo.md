@@ -1,68 +1,88 @@
 # Modelo de Predicción — Documentación
 
-## Qué se hizo
+> **Versión 2** (reentrenado). La versión 1 de este documento reportaba 64,7% de
+> accuracy con 7 variables. Ese número era engañoso: como el 72,7% de las canciones
+> no son hit, un modelo que dijera siempre *"no es hit"* habría sacado 72,7% sin
+> aprender nada. El detalle del arreglo está en `notebooks/03_model_retraining.ipynb`.
 
-Se entrenó un modelo de Machine Learning para predecir si una canción tiene potencial de ser un hit comercial o no, basándose en 7 características de audio.
+## Qué hace
 
-El modelo usa el dataset limpio de 4,494 canciones (`data/spotify_clean.csv`) que se generó en el notebook de limpieza.
+Predice si una canción tiene potencial de ser un hit comercial (popularidad de
+Spotify ≥ 70) a partir de 10 características de audio, usando las 4.494 canciones
+de `data/spotify_clean.csv`.
 
 ## Archivos generados
 
-- `models/model.pkl` — El modelo entrenado. Se carga con `joblib.load()` y ya queda listo para predecir.
-- `models/features.pkl` — La lista de features en el orden que el modelo espera recibirlos. Importante para que Streamlit pase los datos bien.
-- `notebooks/02_model_training.ipynb` — El notebook con todo el proceso paso a paso.
+| Archivo | Qué es |
+|---|---|
+| `models/model.pkl` | El modelo entrenado, listo para `joblib.load()` |
+| `models/features.pkl` | La lista de variables **en el orden exacto** que el modelo espera |
+| `models/metrics.json` | Las métricas y las importancias que la app muestra en la Ficha técnica |
+| `notebooks/03_model_retraining.ipynb` | El proceso completo, paso a paso |
+| `notebooks/train_model.py` | El mismo proceso como script ejecutable |
 
-## Features usadas
+## Variables de entrada
 
-El modelo recibe estos 7 valores para hacer la predicción:
+Las 7 originales más 3 que probamos y sí aportaron: agregar `duration_min`,
+`instrumentalness` y `liveness` subió el ROC-AUC de **0,708 a 0,743**.
 
-| Feature | Qué es | Rango |
-|---------|--------|-------|
-| danceability | Qué tan bailable | 0 a 1 |
-| energy | Intensidad | 0 a 1 |
-| valence | Alegre vs triste | 0 a 1 |
-| tempo | BPM | ~50 a 240 |
-| loudness | Volumen (dB) | -48 a 1 |
-| speechiness | Voz hablada vs cantada | 0 a 1 |
-| acousticness | Acústico vs electrónico | 0 a 1 |
+| # | Variable | Qué es | Rango |
+|---|---|---|---|
+| 1 | danceability | Qué tan bailable | 0 a 1 |
+| 2 | energy | Intensidad | 0 a 1 |
+| 3 | valence | Alegre vs. triste | 0 a 1 |
+| 4 | tempo | BPM | ~50 a 240 |
+| 5 | loudness | Volumen (dB) | -48 a 1 |
+| 6 | speechiness | Voz hablada vs. cantada | 0 a 1 |
+| 7 | acousticness | Acústico vs. electrónico | 0 a 1 |
+| 8 | duration_min | Duración en minutos | ~0,5 a 10 |
+| 9 | instrumentalness | Probabilidad de no tener voz | 0 a 1 |
+| 10 | liveness | Presencia de público | 0 a 1 |
 
-**Orden crítico:** El modelo espera los datos exactamente en este orden (de arriba a abajo). Si se pasan desordenados, la predicción sale mal. Por eso existe `features.pkl` — para no tener que recordarlo de memoria. Se usa así:
+**El orden es crítico.** Si las columnas llegan desordenadas el modelo predice mal
+sin lanzar ningún error. Por eso nunca se escribe la lista a mano:
 
 ```python
 features = joblib.load("models/features.pkl")
-# Devuelve: ['danceability', 'energy', 'valence', 'tempo', 'loudness', 'speechiness', 'acousticness']
 ```
 
-## Cómo funciona
+## Cómo se entrenó
 
-1. **Se separaron los datos en 80% entrenamiento y 20% prueba.**
-   Le dimos 3,595 canciones para que aprenda los patrones (80%)
-Le hicimos un "examen" con 899 canciones que nunca vio (20%)
-Sacó 64.7% → no se memorizó, realmente aprendió algo (aunque no es perfecto)
-2. Se usó un RandomForestClassifier de scikit-learn con 200 árboles
-3. Se aplicó `class_weight='balanced'` porque hay más no-hits (73%) que hits (27%)
-4. El modelo se evaluó con los datos de prueba (el 20% que nunca vio)
+1. **80% entrenamiento / 20% prueba**, estratificado (3.595 y 899 canciones).
+2. **Baseline explícito** con `DummyClassifier`: un modelo que siempre dice "no hit"
+   saca 72,7% de accuracy. Cualquier resultado se compara contra esa vara.
+3. **Comparación con validación cruzada de 5 pliegues** entre `RandomForestClassifier`
+   y `LogisticRegression`, usando ROC-AUC como criterio. Ganó el Random Forest.
+4. **`class_weight='balanced_subsample'`** para compensar el desbalance de clases.
+5. **Umbral de decisión elegido, no heredado:** en vez del 0,50 por defecto, se busca
+   el umbral que maximiza la exactitud balanceada, calculado por validación cruzada
+   sobre el conjunto de entrenamiento (nunca sobre el de prueba). Resultado: **0,39**.
 
-## Resultados
+## Resultados sobre el 20% de prueba
 
-- **Accuracy general:** 64.7%
-- De los hits reales, detectó el 66% (recall)
-- De los que dijo "hit", acertó el 41% (precision)
+| Métrica | Valor | Referencia |
+|---|---|---|
+| **ROC-AUC** | **0,744** | 0,500 = azar |
+| **Exactitud balanceada** | **0,671** | 0,500 = azar |
+| Recall de hits | 80,0% | detecta 8 de cada 10 hits reales |
+| Precisión de hits | 39,6% | cuando dice "hit", acierta 4 de cada 10 |
+| Accuracy simple | 61,3% | baseline: 72,7% |
 
-Las features que más pesan para decidir si algo es hit:
+**La accuracy quedó bajo el baseline a propósito.** El umbral 0,39 sacrifica aciertos
+en la clase mayoritaria para no perderse hits. Es una decisión de negocio: para un
+sello discográfico, dejar pasar un éxito cuesta más que escuchar una canción de más.
+Las métricas que sí miden aprendizaje real — ROC-AUC y exactitud balanceada — están
+muy por encima del azar.
 
-1. loudness (volumen)
-2. acousticness
-3. energy
+## Qué pesa más en la decisión
 
-## Pruebas rápidas
+1. instrumentalness (19,6%)
+2. loudness (14,2%)
+3. duration_min (10,6%)
+4. acousticness (10,0%)
+5. energy (9,9%)
 
-Se probó con dos canciones simuladas:
-
-- Reggaetón tipo Bad Bunny (bailable, energético, fuerte) → Predijo **HIT** con 64% de confianza
-- Balada acústica triste (lenta, suave, triste) → Predijo **NO HIT** con 78% de confianza
-
-## Cómo usarlo en Streamlit
+## Cómo usarlo
 
 ```python
 import joblib
@@ -70,11 +90,18 @@ import pandas as pd
 
 modelo = joblib.load("models/model.pkl")
 features = joblib.load("models/features.pkl")
+umbral = 0.39   # o leerlo de models/metrics.json
 
-# Ejemplo: armar datos desde los sliders
-datos = pd.DataFrame([[0.85, 0.75, 0.60, 95, -4, 0.15, 0.05]], columns=features)
+datos = pd.DataFrame([[0.85, 0.75, 0.60, 95, -4, 0.15, 0.05, 3.2, 0.0, 0.12]],
+                     columns=features)
 
-# Predecir
-prediccion = modelo.predict(datos)[0]           # 1 = hit, 0 = no hit
-probabilidad = modelo.predict_proba(datos)[0]   # [prob_no_hit, prob_hit]
+probabilidad = modelo.predict_proba(datos)[0][1]   # probabilidad de ser hit
+es_hit = probabilidad >= umbral
 ```
+
+## Limitación honesta
+
+Ninguna característica de audio se correlaciona fuerte con la popularidad (la más alta
+es el volumen, con 0,20). El sonido explica solo una parte del éxito; el resto lo ponen
+el artista, el marketing y las playlists, que no están en este dataset. Ningún modelo
+entrenado solo con audio va a rendir mucho mejor que este.

@@ -10,4 +10,3 @@ __pycache__/
 
 # Configuración de entorno y claves (si llegas a usar en el futuro)
 .env
-.streamlit/secrets.toml
