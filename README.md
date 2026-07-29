@@ -6,8 +6,8 @@ imaginaria con un modelo de Machine Learning.
 
 **Samsung Innovation Campus Chile 2026 — Cohort 2 · Código y Programación**
 
-🔗 **App publicada:** _(pendiente: pegar aquí la URL de Streamlit Cloud)_
-🔗 **Repositorio:** [hit-predictor-spotify](https://github.com/Kemtojp/hit-predictor-spotify)
+🔗 **App publicada:** [_Streamlit App_](https://hit-predictor-spotify.streamlit.app)
+🔗 **Repositorio:** [ GitHub Repo ](https://github.com/Kemtojp/hit-predictor-spotify)
 ---
 
 ## ❓ Pregunta de análisis
@@ -159,7 +159,7 @@ python notebooks/train_model.py
 | 3+ indicadores | Canciones analizadas, % de hits, popularidad promedio y ROC-AUC en el encabezado, más 4 métricas en la Ficha técnica |
 | Explicación no técnica | Sección *"El hallazgo principal, en simple"* en la Ficha técnica |
 | Dataset real con fuente citada | Kaggle, enlazado arriba y dentro de la app |
-| Publicación | _(pendiente: URL de Streamlit Cloud)_ |
+| Publicación | [_Streamlit App_](https://hit-predictor-spotify.streamlit.app) |
 
 ---
 
