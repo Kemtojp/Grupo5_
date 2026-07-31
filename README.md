@@ -52,7 +52,7 @@ La **barra lateral** incluye filtros por género, rango de años y un interrupto
 
 - **Fuente:** [Spotify Music Dataset](https://www.kaggle.com/datasets/solomonameh/spotify-music-dataset)
   (autor: *solomonameh*, Kaggle), combinando los archivos de alta y baja popularidad.
-- **Licencia:** _(pendiente: copiar la licencia exacta que aparece en la ficha de Kaggle)_
+- **Licencia:** Open Database License
 - **Volumen:** 4.494 canciones únicas tras limpieza (sin duplicados ni nulos).
 - **Variable objetivo:** `is_hit = 1` cuando la popularidad de Spotify es ≥ 70.
 - **Balance de clases:** 27,3% hits · 72,7% no hits.
